@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sarvopakar</string>
+    <string name="title_activity_main">Sarvopakar</string>
+    <string name="package_name">com.sarvopakar.app</string>
+    <string name="custom_url_scheme">com.sarvopakar.app</string>
+</resources>

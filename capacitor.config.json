@@ -1,0 +1,30 @@
+{
+  "appId": "com.sarvopakar.app",
+  "appName": "Sarvopakar",
+  "webDir": "www",
+  "server": {
+    "url": "https://www.sarvopakar.com",
+    "androidScheme": "https",
+    "allowNavigation": [
+      "www.sarvopakar.com",
+      "sarvopakar.com",
+      "*.sarvopakar.com",
+      "accounts.google.com",
+      "*.googleapis.com",
+      "*.olamaps.io",
+      "*.razorpay.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
+}
