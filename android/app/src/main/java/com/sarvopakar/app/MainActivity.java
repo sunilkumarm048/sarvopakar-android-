@@ -1,4 +1,4 @@
-package com.sarvopakar.app;
+package com.sarvopakar.provider;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,8 +33,12 @@ public class MainActivity extends BridgeActivity {
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build();
 
+        // v3: channel settings are frozen per-device at first creation, and on
+        // some phones (MIUI especially) v2 ended up with its sound switched
+        // off — something the app cannot undo. Shipping a fresh channel id
+        // resets every device to OUR defaults: loud custom ring, heads-up.
         NotificationChannel channel = new NotificationChannel(
-            "order_alerts",
+            "order_alerts_v3",
             "New order alerts",
             NotificationManager.IMPORTANCE_HIGH
         );
@@ -44,9 +48,16 @@ public class MainActivity extends BridgeActivity {
         channel.setVibrationPattern(new long[] { 0, 400, 200, 400, 200, 400 });
         channel.setBypassDnd(false);
         channel.setShowBadge(true);
+        // Show the full alert on the lock screen (stock Android honors this
+        // directly; MIUI additionally gates it behind its own app toggle).
+        channel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
 
         NotificationManager nm = getSystemService(NotificationManager.class);
-        if (nm != null) nm.createNotificationChannel(channel);
+        if (nm != null) {
+            nm.deleteNotificationChannel("order_alerts");    // v1
+            nm.deleteNotificationChannel("order_alerts_v2"); // v2 (muted on some devices)
+            nm.createNotificationChannel(channel);
+        }
     }
 
     /** Android 13+ requires runtime opt-in before any notification shows. */
@@ -64,6 +75,7 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(DeviceSettingsPlugin.class);
         super.onCreate(savedInstanceState);
         createOrderAlertChannel();
         requestNotificationPermission();
